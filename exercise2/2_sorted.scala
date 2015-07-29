@@ -1,4 +1,4 @@
-object HelloWorld{
+object Excercise2{
 
 
   def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
