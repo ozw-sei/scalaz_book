@@ -102,6 +102,7 @@ val ex34 = List.drop(List(1,2,3,4,5,6,7,8,9,10), 5)
 val ex35 = List.dropWhile(List(2,4,6,8,10, 1,3,5), (n:Int) => n % 2 == 0)
 
 /**
+  * ex3.6
   * 最後尾より前の要素を取り出し
   */
 val ex36 = List.init(List(1,2,3,4,5))
