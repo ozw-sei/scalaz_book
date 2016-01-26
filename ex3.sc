@@ -67,6 +67,35 @@ object List {
     _dropWhile(l, f)
 
   }
+
+  def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = // Utility functions
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+  def foldRight2[A, B](as:List[A], z:B)(f:(A, B) => B): B = {
+    foldLeft(reverse(as), z)((b:B, a:A) => f(a, b))
+  }
+
+  def foldLeft[A, B](as:List[A], z:B)(f:(B, A) => B): B = {
+    as match{
+      case Cons(x, xs) => foldLeft(xs, f(z, x))(f)
+      case Nil => z
+    }
+  }
+
+  def sum2(ints: List[Int]): Int =
+    List.foldLeft(ints, 0)((left:Int, right:Int) => left + right)
+
+  def length[A](as:List[A]):Int = foldRight(as, 0)((left, right) => right +1)
+
+  def product2(ints:List[Double]):Double =
+    List.foldLeft(ints, 1.0)((left:Double, right:Double) => left * right)
+
+  def length2[A](ints:List[A]):Int = List.foldLeft(ints, 0)((left:Int, right:A) => left + 1)
+
+  def reverse[A](arr:List[A]): List[A] =
+    List.foldLeft(arr, Nil:List[A])((left:List[A], right:A) => Cons(right, left))
 }
 
 /**
@@ -79,7 +108,6 @@ val ex31 = List(1, 2, 3, 4, 5) match {
   case Cons(h, t) => h + List.sum(t)
   case _ => 101
 }
-
 /**
   * ex3.2
   * 先頭の要素を削除するtailを作成する
@@ -100,9 +128,52 @@ val ex34 = List.drop(List(1,2,3,4,5,6,7,8,9,10), 5)
   * dropWhileの実装
   */
 val ex35 = List.dropWhile(List(2,4,6,8,10, 1,3,5), (n:Int) => n % 2 == 0)
-
 /**
   * ex3.6
   * 最後尾より前の要素を取り出し
   */
 val ex36 = List.init(List(1,2,3,4,5))
+/**
+  * 3.7(答え見た）
+  * 仮に例外値をキャッチして処理を切り替えることはできない。
+  * なぜならばfoldRightの中でf()より前に処理を挟むことができないので例外をハンドルできる箇所がない
+  */
+
+
+/**
+  * 3.8
+  * foldRight(List(1,2,3), Nil)(Cons(_,_))
+  * のような渡され方をした場合はCons(Nil, List(1,2,3))になるが、
+  * foldRightでNilがSkipされるので結果的には変わらない
+  */
+val ex38 = List.foldRight(List(1,2,3), Nil:List[Int])(Cons(_,_))
+/**
+  * 3.9 foldRightを使用してlengthを作る
+  * 楽勝
+  */
+val ex39 = List.length(List(1,2,3,4,5))
+/**
+  * 3.10
+  * foldLeftを実装
+  */
+val ex310 = List.foldLeft(List(1,2,3,4,5), 100)((hoge, fuga) => hoge+fuga)
+/**
+  * 3.11
+  * foldLeftを使用してsum/product/lengthを作る
+  */
+val ex311_length = List.length2(List(1,2,3,4,5)) // 5
+val ex311_sum = List.sum2(List(1,2,3,4,5)) // 15
+val ex311_product = List.product2(List(1.0, 2.0, 3.0)) // 6.0
+
+/**
+  * 3.12
+  * Listを逆にする関数を作れ
+  */
+val ex312:List[Int] = List.reverse(List(1,2,3)) // List(3,2,1)
+
+
+/**
+  * 3.13
+  * foldLeftを使用してfoldRightを実装
+  */
+val ex313 = List.foldRight2(List(10.0:Double, 4.0:Double), 2.0:Double)((left, right) => right - left)
