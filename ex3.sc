@@ -25,17 +25,17 @@ object List {
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
 
-  def tail[A](list: List[A]) = list match{
+  def tail[A](list: List[A]):List[A] = list match{
     case Nil => Nil
     case Cons(x, xs) => xs
   }
 
-  def setHead[A](list:List[A], value:A) = list match{
+  def setHead[A](list:List[A], value:A):List[A] = list match{
     case Nil => Nil
     case Cons(x, xs) => Cons(value, xs)
   }
 
-  def drop[A](l:List[A], n: Int) = {
+  def drop[A](l:List[A], n: Int):List[A] = {
     @tailrec
     def _drop(l:List[A], current:Int): List[A] = l match{
       case Nil => l
@@ -44,7 +44,7 @@ object List {
     _drop(l, n-1)
   }
 
-  def append[A](a1:List[A], a2:List[A]) = a1 match{
+  def append[A](a1:List[A], a2:List[A]):List[A] = a1 match{
     case Nil => a2
     case Cons(x, xs) => Cons(x, a2)
   }
@@ -55,7 +55,7 @@ object List {
     case Cons(x, xs) => Cons(x, init(xs))
   }
 
-  def dropWhile[A](l:List[A], f:A => Boolean) = {
+  def dropWhile[A](l:List[A], f:A => Boolean):List[A] = {
 
     @tailrec
     def _dropWhile(l:List[A], f:A => Boolean):List[A] = {
@@ -101,5 +101,7 @@ val ex34 = List.drop(List(1,2,3,4,5,6,7,8,9,10), 5)
   */
 val ex35 = List.dropWhile(List(2,4,6,8,10, 1,3,5), (n:Int) => n % 2 == 0)
 
+/**
+  * 最後尾より前の要素を取り出し
+  */
 val ex36 = List.init(List(1,2,3,4,5))
-
