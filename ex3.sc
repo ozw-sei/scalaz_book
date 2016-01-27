@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.TODO
+
 import scala.annotation.tailrec
 
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
@@ -96,6 +98,56 @@ object List {
 
   def reverse[A](arr:List[A]): List[A] =
     List.foldLeft(arr, Nil:List[A])((left:List[A], right:A) => Cons(right, left))
+
+//  def addOne(arr:List[Int]): List[Int] = arr match{
+//    case Nil => Nil
+//    case Cons(x, xs) => addOne(Cons(x+1, xs))
+//  }
+
+  def addOne(arr:List[Int]): List[Int] =
+    List.foldRight(arr, Nil:List[Int])((left:Int, right:List[Int]) => Cons(left+1, right))
+
+  def allToString(arr:List[Double]): List[String] =
+    List.foldRight(arr, Nil:List[String])((left:Double, right:List[String]) => Cons(left.toString, right))
+
+  def map[A, B](as:List[A])(f:A => B):List[B] =
+    List.foldRight(as, Nil:List[B])((left:A, right:List[B]) => Cons(f(left), right))
+
+
+  def filter[A](as:List[A])(f:A => Boolean): List[A] =
+    List.foldRight(as, Nil:List[A])((l:A, r:List[A]) => if(f(l)) Cons(l, r) else r)
+
+  /**
+    * 解けなかった
+    * @param l
+    * @tparam A
+    * @return
+    */
+  def concat[A](l: List[List[A]]): List[A] =
+    foldRight(l, Nil:List[A])(append)
+
+  /**
+    * concat解けなかったので気が付かなかった
+    * @param as
+    * @param f
+    * @tparam A
+    * @return
+    */
+  def flatMap[A,B](l: List[A])(f: A => List[B]): List[B] =
+    concat(map(l)(f))
+
+  def filter2[A](as:List[A])(f:A => Boolean): List[A] =
+    flatMap(as)((l:A) => if(f(l)) List.concat(l) else Nil)
+
+  def addTwoList(left:List[Int], right:List[Int]):List[Int] = (left, right) match{
+    case (Nil, _) => Nil
+    case (_, Nil) => Nil
+    case (Cons(x1, xs1), Cons(x2, xs2)) => Cons(x1 + x2, mul(left, right))
+  }
+
+  def zipWith[A, B, C](left:List[A], right:List[B])(f:(A, B) => C):List[C] = Nil:List[C]
+
+
 }
 
 /**
@@ -164,16 +216,46 @@ val ex310 = List.foldLeft(List(1,2,3,4,5), 100)((hoge, fuga) => hoge+fuga)
 val ex311_length = List.length2(List(1,2,3,4,5)) // 5
 val ex311_sum = List.sum2(List(1,2,3,4,5)) // 15
 val ex311_product = List.product2(List(1.0, 2.0, 3.0)) // 6.0
-
 /**
   * 3.12
   * Listを逆にする関数を作れ
   */
 val ex312:List[Int] = List.reverse(List(1,2,3)) // List(3,2,1)
 
-
 /**
   * 3.13
   * foldLeftを使用してfoldRightを実装
   */
 val ex313 = List.foldRight2(List(10.0:Double, 4.0:Double), 2.0:Double)((left, right) => right - left)
+
+//val ex315 = List.concat(List(1,2,3), List(4,5,6)) // List(1,2,3,4,5,6)
+/**
+  * 3.16
+  * 全ての要素のIntに+1する
+  */
+val ex316 = List.addOne(List(1,2,3)) // List(2,3,4)
+
+
+/**
+  * 3.17
+  * 全ての要素をTostringする
+  */
+val ex317 = List.allToString(List(1,2,3,4,5,6,7))
+
+/**
+  * 3.18
+  * map[A, B](as:List[A])(f:A => B) をつくれ
+  */
+
+val ex318_div2 = List.map(List(2,4,6,8))(_ / 2 )
+val ex318_tost = List.map(List(2,4,6,8))(_.toString)
+val ex318_mul2 = List.map(List(2,4,6,8))(_*2)
+
+/**
+  * 3.19
+  */
+val ex319rejectOdd = List.filter(List(1,2,3,4,5))(_ % 2 != 1)
+/**
+  * ex3.20
+  */
+val ex320 = List.flatMap(List(1,2,3)){i => List(i, i)}
